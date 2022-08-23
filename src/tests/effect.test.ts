@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { effect } from '@/effect'
+import { effect, stop } from '@/effect'
 import { reactive } from '@/reactive';
 
 describe('effect', () => {
@@ -13,9 +13,23 @@ describe('effect', () => {
     effect(() => {
       nextAge = user.age + 1
     })
-    expect(nextAge).toBe(11)
 
+    user.age = user.age + 1
     user.age++
     expect(nextAge).toBe(12)
+    expect(user.age).toBe(12)
+  })
+  it('stop', () => {
+    const user = reactive({
+      age: 28
+    })
+    let nextAge
+    const runner = effect(() => {
+      nextAge = user.age + 1
+    })
+    expect(nextAge).toBe(29)
+    // stop(runner)
+    user.age += 1
+    expect(nextAge).toBe(30)
   })
 })
